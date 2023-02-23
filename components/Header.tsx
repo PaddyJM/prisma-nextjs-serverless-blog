@@ -22,7 +22,7 @@ import {
   UnlockIcon,
 } from "@chakra-ui/icons";
 
-const Header = () => {
+const Header: React.FC = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
   const isActive: (pathName: string) => boolean = (pathname) =>
@@ -130,3 +130,5 @@ const Header = () => {
     </>
   );
 };
+
+export default Header;
