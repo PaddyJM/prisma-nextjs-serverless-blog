@@ -17,6 +17,7 @@ import Layout from "components/Layout";
 import Router from "next/router";
 import { GetServerSideProps } from "next";
 import client from "db/prismadb";
+import { BlogAuthorProps, PostProps } from "./types";
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const session = await getSession({ req });
@@ -41,11 +42,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     props: { drafts },
   };
 };
-
-interface BlogAuthorProps {
-  date: Date;
-  name: string;
-}
 
 export const BlogAuthor: React.FC<BlogAuthorProps> = (props) => {
   const { data: session, status } = useSession();
@@ -88,25 +84,7 @@ export const BlogAuthor: React.FC<BlogAuthorProps> = (props) => {
   );
 };
 
-type Props = {
-  drafts: PostProps[];
-};
-
-export type PostProps = {
-  id: number;
-  title: string;
-  author:
-    | {
-        name: string;
-        email: string;
-      }
-    | undefined;
-  content: string;
-  published: boolean;
-  createdAt: Date;
-};
-
-const Drafts: React.FC<Props> = (props) => {
+const Drafts: React.FC<PostProps[]> = (props) => {
   const { data: session } = useSession();
 
   const color = useColorModeValue("gray.50", "gray.800");
@@ -145,13 +123,13 @@ const Drafts: React.FC<Props> = (props) => {
               alignSelf={"flex-start"}
               rounded={"md"}
             >
-              {props.drafts.length !== 0 ? "My Drafts" : "No Drafts"}
+              {props.length !== 0 ? "My Drafts" : "No Drafts"}
             </Text>
           </Stack>
         </SimpleGrid>
       </Container>
 
-      {props.drafts.map((post) => (
+      {props.map((post) => (
         <Container
           key={post.id}
           maxW="container.xl"
