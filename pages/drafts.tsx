@@ -84,7 +84,11 @@ export const BlogAuthor: React.FC<BlogAuthorProps> = (props) => {
   );
 };
 
-const Drafts: React.FC<PostProps[]> = (props) => {
+type DraftsProps = {
+  drafts: PostProps[];
+};
+
+const Drafts: React.FC<DraftsProps> = (props) => {
   const { data: session } = useSession();
 
   const color = useColorModeValue("gray.50", "gray.800");
@@ -123,13 +127,13 @@ const Drafts: React.FC<PostProps[]> = (props) => {
               alignSelf={"flex-start"}
               rounded={"md"}
             >
-              {props.length !== 0 ? "My Drafts" : "No Drafts"}
+              {props.drafts.length !== 0 ? "My Drafts" : "No Drafts"}
             </Text>
           </Stack>
         </SimpleGrid>
       </Container>
 
-      {props.map((post) => (
+      {props.drafts.map((post) => (
         <Container
           key={post.id}
           maxW="container.xl"
