@@ -12,8 +12,10 @@ import {
   Button,
   Container,
   Flex,
+  FormControl,
   Heading,
   HStack,
+  Input,
   Link,
   Stack,
   Text,
@@ -25,7 +27,8 @@ import { createRef, useState } from "react";
 import { GetServerSideProps } from "next";
 import client from "db/prismadb";
 import Router from "next/router";
-import { CheckCircleIcon, DeleteIcon } from "@chakra-ui/icons";
+import { ChatIcon, CheckCircleIcon, DeleteIcon } from "@chakra-ui/icons";
+import { addSyntheticLeadingComment } from "typescript";
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const post = await client.post.findUnique({
@@ -107,6 +110,11 @@ const Post: React.FC<PostProps> = (props) => {
   const onCloseDelete = () => setIsDelete(false);
   const [isPublish, setIsPublish] = useState(false);
   const onClosePublish = () => setIsPublish(false);
+  const [isComment, setIsComment] = useState(false);
+  const onCloseComment = () => setIsComment(false);
+
+  const [comment, setComment] = useState("");
+
   const cancelRef = createRef<HTMLButtonElement>();
 
   const color = useColorModeValue("gray.700", "gray.200");
@@ -158,6 +166,52 @@ const Post: React.FC<PostProps> = (props) => {
                   ml={3}
                 >
                   Delete Post
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialogOverlay>
+        </AlertDialog>
+        <AlertDialog
+          isOpen={isComment}
+          leastDestructiveRef={cancelRef}
+          onClose={onCloseComment}
+        >
+          <AlertDialogOverlay>
+            <AlertDialogContent>
+              <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                Add Comment
+              </AlertDialogHeader>
+              <AlertDialogBody>Write your comment below.</AlertDialogBody>
+              <AlertDialogBody>
+                <FormControl id="comment">
+                  <Input
+                    autoFocus
+                    onChange={(e) => setComment(e.target.value)}
+                    placeholder="Add text here"
+                    type="text"
+                    value={comment}
+                  />
+                </FormControl>
+              </AlertDialogBody>
+              <AlertDialogFooter>
+                <Button ref={cancelRef} onClick={onCloseComment}>
+                  Cancel
+                </Button>
+                <Button
+                  colorScheme="blue"
+                  onClick={() => {
+                    deletePost(props.id);
+                    toast({
+                      title: "Comment added.",
+                      description: "Your comment has been added.",
+                      status: "success",
+                      duration: 5000,
+                      isClosable: true,
+                    });
+                  }}
+                  ml={3}
+                >
+                  Add Comment
                 </Button>
               </AlertDialogFooter>
             </AlertDialogContent>
@@ -244,14 +298,24 @@ const Post: React.FC<PostProps> = (props) => {
                       </Button>
                     )}
                   {userHasValidSession && postBelongsToUser && (
-                    <Button
-                      leftIcon={<DeleteIcon />}
-                      colorScheme="red"
-                      variant="solid"
-                      onClick={() => setIsDelete(true)}
-                    >
-                      Delete
-                    </Button>
+                    <div>
+                      <Button
+                        leftIcon={<DeleteIcon />}
+                        colorScheme="red"
+                        variant="solid"
+                        onClick={() => setIsDelete(true)}
+                      >
+                        Delete
+                      </Button>
+                      <Button
+                        leftIcon={<ChatIcon />}
+                        colorScheme="blue"
+                        variant="solid"
+                        onClick={() => setIsComment(true)}
+                      >
+                        Comment
+                      </Button>
+                    </div>
                   )}
                 </Stack>
               </Stack>
