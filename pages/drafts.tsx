@@ -43,7 +43,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   };
 };
 
-export const BlogAuthor: React.FC<BlogAuthorProps> = (props) => {
+const BlogAuthor: React.FC<BlogAuthorProps> = (props) => {
   const { data: session, status } = useSession();
   const color = useColorModeValue("gray.50", "gray.800");
   const loading = status === "loading";

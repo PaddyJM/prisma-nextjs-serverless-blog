@@ -58,7 +58,7 @@ async function deletePost(id: number): Promise<void> {
   await Router.push("/");
 }
 
-export const BlogAuthor: React.FC<BlogAuthorProps> = (props) => {
+const BlogAuthor: React.FC<BlogAuthorProps> = (props) => {
   const { data: session, status } = useSession();
   const loading = status === "loading";
   const color = useColorModeValue("gray.50", "gray.800");

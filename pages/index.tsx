@@ -35,7 +35,7 @@ export const getStaticProps: GetStaticProps = async () => {
   };
 };
 
-export const BlogAuthor: React.FC<BlogAuthorProps> = (props) => {
+const BlogAuthor: React.FC<BlogAuthorProps> = (props) => {
   const { data: session, status } = useSession();
   const loading = status === "loading";
   if (loading) {
