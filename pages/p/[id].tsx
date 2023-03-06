@@ -327,6 +327,10 @@ const Post: React.FC<PostProps> = (props) => {
                       >
                         Delete
                       </Button>
+                    </div>
+                  )}
+                  {userHasValidSession && postBelongsToUser && (
+                    <div>
                       <Button
                         leftIcon={<ChatIcon />}
                         colorScheme="blue"
