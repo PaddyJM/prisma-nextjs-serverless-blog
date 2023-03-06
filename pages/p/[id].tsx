@@ -23,7 +23,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import Layout from "components/Layout";
-import { createRef, useState } from "react";
+import React, { createRef, useState } from "react";
 import { GetServerSideProps } from "next";
 import client from "db/prismadb";
 import Router from "next/router";
@@ -54,7 +54,6 @@ async function publishPost(id: number): Promise<void> {
 }
 
 async function deletePost(id: number): Promise<void> {
-  console.log(id);
   await fetch(`http://localhost:3000/api/post/${id}`, {
     method: "DELETE",
   });
@@ -120,6 +119,22 @@ const Post: React.FC<PostProps> = (props) => {
   const color = useColorModeValue("gray.700", "gray.200");
 
   const { data: session, status } = useSession();
+
+  async function submitComment(e: React.SyntheticEvent): Promise<void> {
+    e.preventDefault();
+    try {
+      const body = { comment, id: props.id };
+      await fetch(`http://localhost:3000/api/comment`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      await Router.push("/");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   if (status === "loading") {
     return <div>Authenticating...</div>;
   }
@@ -177,44 +192,49 @@ const Post: React.FC<PostProps> = (props) => {
           onClose={onCloseComment}
         >
           <AlertDialogOverlay>
-            <AlertDialogContent>
-              <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                Add Comment
-              </AlertDialogHeader>
-              <AlertDialogBody>Write your comment below.</AlertDialogBody>
-              <AlertDialogBody>
-                <FormControl id="comment">
-                  <Input
-                    autoFocus
-                    onChange={(e) => setComment(e.target.value)}
-                    placeholder="Add text here"
-                    type="text"
-                    value={comment}
-                  />
-                </FormControl>
-              </AlertDialogBody>
-              <AlertDialogFooter>
-                <Button ref={cancelRef} onClick={onCloseComment}>
-                  Cancel
-                </Button>
-                <Button
-                  colorScheme="blue"
-                  onClick={() => {
-                    deletePost(props.id);
-                    toast({
-                      title: "Comment added.",
-                      description: "Your comment has been added.",
-                      status: "success",
-                      duration: 5000,
-                      isClosable: true,
-                    });
-                  }}
-                  ml={3}
-                >
+            <form onSubmit={submitComment}>
+              <AlertDialogContent>
+                <AlertDialogHeader fontSize="lg" fontWeight="bold">
                   Add Comment
-                </Button>
-              </AlertDialogFooter>
-            </AlertDialogContent>
+                </AlertDialogHeader>
+                <AlertDialogBody>Write your comment below.</AlertDialogBody>
+                <AlertDialogBody>
+                  <FormControl id="comment">
+                    <Input
+                      autoFocus
+                      onChange={(e) => setComment(e.target.value)}
+                      placeholder="Add text here"
+                      type="text"
+                      value={comment}
+                    />
+                  </FormControl>
+                </AlertDialogBody>
+                <AlertDialogFooter>
+                  <Button ref={cancelRef} onClick={onCloseComment}>
+                    Cancel
+                  </Button>
+                  <Button
+                    disabled={!comment}
+                    type="submit"
+                    leftIcon={<CheckCircleIcon />}
+                    colorScheme="linkedin"
+                    variant="solid"
+                    onClick={() => {
+                      toast({
+                        title: "Comment added.",
+                        description: "Your comment has been added.",
+                        status: "success",
+                        duration: 5000,
+                        isClosable: true,
+                      });
+                    }}
+                    ml={3}
+                  >
+                    Add Comment
+                  </Button>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </form>
           </AlertDialogOverlay>
         </AlertDialog>
         <AlertDialog
