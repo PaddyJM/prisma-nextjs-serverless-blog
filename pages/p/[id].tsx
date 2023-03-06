@@ -329,18 +329,20 @@ const Post: React.FC<PostProps> = (props) => {
                       </Button>
                     </div>
                   )}
-                  {userHasValidSession && postBelongsToUser && (
-                    <div>
-                      <Button
-                        leftIcon={<ChatIcon />}
-                        colorScheme="blue"
-                        variant="solid"
-                        onClick={() => setIsComment(true)}
-                      >
-                        Comment
-                      </Button>
-                    </div>
-                  )}
+                  {props.published &&
+                    userHasValidSession &&
+                    postBelongsToUser && (
+                      <div>
+                        <Button
+                          leftIcon={<ChatIcon />}
+                          colorScheme="blue"
+                          variant="solid"
+                          onClick={() => setIsComment(true)}
+                        >
+                          Comment
+                        </Button>
+                      </div>
+                    )}
                 </Stack>
               </Stack>
             </Box>
